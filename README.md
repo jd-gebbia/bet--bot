@@ -1,0 +1,2 @@
+# bet--bot
+for fools
