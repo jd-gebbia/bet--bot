@@ -21,18 +21,19 @@ def log(**kwargs):
 
 @contextmanager
 def measure(**kwargs):
-    start = time.time()
-    status = {'status': 'starting'}
-    log(**dict(kwargs.items() + status.items()))
-    try:
-        yield
-    except Exception as e:
-        status = {'status': 'err', 'exception': "'{0}'".format(e)}
-        log(**dict(kwargs.items() + status.items()))
-        raise
-    else:
-        status = {'status': 'ok', 'duration': time.time() - start}
-        log(**dict(kwargs.items() + status.items()))
+    return
+    # start = time.time()
+    # status = {'status': 'starting'}
+    # log(**dict(kwargs.items() + status.items()))
+    # try:
+    #     yield
+    # except Exception as e:
+    #     status = {'status': 'err', 'exception': "'{0}'".format(e)}
+    #     log(**dict(kwargs.items() + status.items()))
+    #     raise
+    # else:
+    #     status = {'status': 'ok', 'duration': time.time() - start}
+    #     log(**dict(kwargs.items() + status.items()))
 
 
 def debug_print(text):
