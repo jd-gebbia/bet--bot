@@ -7,13 +7,13 @@ bot to retweet all from its following list
 # imports
 import os, time, json
 from sys import exit
-from urlparse import urlparse
+# from urlparse import urlparse
 from contextlib import contextmanager
 import tweepy
 import backoff
 
 # import exceptions
-from urllib2 import HTTPError
+# from urllib2 import HTTPError
 
 def log(**kwargs):
     print(' '.join( "{0}={1}".format(k,v) for k,v in sorted(kwargs.items()) ))
@@ -68,7 +68,7 @@ def fav_tweet(api,reply):
     # was False
     try:
         api.create_favorite(id=reply.id)
-    except tweepy.TweepError as e:
+    except Exception as e:
         log(at='fav_error', tweet=reply.id, klass='TweepError', msg="'{0}'".format(str(e)))
         return False
 
@@ -77,26 +77,26 @@ def fav_tweet(api,reply):
 
 
 def validate_env():
-    keys = [
-        'TW_USERNAME',
-        'TW_CONSUMER_KEY',
-        'TW_CONSUMER_SECRET',
-        'TW_ACCESS_TOKEN',
-        'TW_ACCESS_TOKEN_SECRET',
-        ]
+    # keys = [
+    #     'TW_USERNAME',
+    #     'TW_CONSUMER_KEY',
+    #     'TW_CONSUMER_SECRET',
+    #     'TW_ACCESS_TOKEN',
+    #     'TW_ACCESS_TOKEN_SECRET',
+    #     ]
 
     # Check for missing env vars
-    for key in keys:
-        v = os.environ.get(key)
-        if not v:
-            log(at='validate_env', status='missing', var=key)
-            raise ValueError("Missing ENV var: {0}".format(key))
+    # for key in keys:
+    #     v = os.environ.get(key)
+    #     if not v:
+    #         log(at='validate_env', status='missing', var=key)
+    #         raise ValueError("Missing ENV var: {0}".format(key))
 
     # Log success
     log(at='validate_env', status='ok')
 
 
-@backoff.on_exception(backoff.expo, tweepy.TweepError, max_tries=8)
+@backoff.on_exception(backoff.expo, Exception, max_tries=8)
 def fetch_friends(api):
     """Fetch friend list from twitter"""
     with measure(at='fetch_friends'):
@@ -104,7 +104,7 @@ def fetch_friends(api):
     return friends
 
 
-@backoff.on_exception(backoff.expo, tweepy.TweepError, max_tries=8)
+@backoff.on_exception(backoff.expo, Exception, max_tries=8)
 def fetch_mentions(api):
     """Fetch mentions from twitter"""
     with measure(at='fetch_mentions'):
@@ -120,16 +120,24 @@ def main():
 
     owner_username    = os.environ.get('TW_OWNER_USERNAME')
     username          = os.environ.get('TW_USERNAME')
-    consumer_key      = os.environ.get('TW_CONSUMER_KEY')
-    consumer_secret   = os.environ.get('TW_CONSUMER_SECRET')
-    access_key        = os.environ.get('TW_ACCESS_TOKEN')
-    access_secret     = os.environ.get('TW_ACCESS_TOKEN_SECRET')
+    bearer_token      = "AAAAAAAAAAAAAAAAAAAAAGyUYwEAAAAAOWLb%2FwKDRHb9KVkFUAbRtmi77QM%3DdRhA24c5JEzXT8anRJ6DEs58bn0phEZp9mk8lVTJPzEpEsIsi2"
+    # consumer_key      = os.environ.get('TW_CONSUMER_KEY')
+    # consumer_secret   = os.environ.get('TW_CONSUMER_SECRET')
+    # access_key        = os.environ.get('TW_ACCESS_TOKEN')
+    # access_secret     = os.environ.get('TW_ACCESS_TOKEN_SECRET')
 
-    auth = tweepy.OAuthHandler(consumer_key=consumer_key,
-        consumer_secret=consumer_secret, secure=True)
-    auth.set_access_token(access_key, access_secret)
+    # auth = tweepy.OAuthHandler(consumer_key=consumer_key,
+    #     consumer_secret=consumer_secret, secure=True)
+    # auth.set_access_token(access_key, access_secret)
 
-    api = tweepy.API(auth_handler=auth, secure=True, retry_count=3)
+    # auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    # auth.set_access_token(access_key, access_secret) 
+    # api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify = True)
+
+
+    auth = tweepy.Client(bearer_token)
+    api = tweepy.API(auth)
+
     friends = fetch_friends(api)
     replies = fetch_mentions(api)
 
