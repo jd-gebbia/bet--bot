@@ -126,8 +126,8 @@ def fetch_friend_tweets(api, friends):
     tweets = []
 
     friend_counter = 0      # Have limit of 100,000 daily requests to user_timeline,
-                            # So running at 15 min intervals means 96 requests per friend,
-                            #  we can't cover more than 1041 friends
+                            # So running at 10 min intervals means 144 requests per friend,
+                            #  we can't cover more than 694 friends
                             # ---- also have a limit of 900 requests every 15 mins
     for friend in friends:
         friend_counter
