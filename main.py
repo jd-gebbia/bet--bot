@@ -159,12 +159,12 @@ def filter_or_retweet(api,tweet):
     # normalized_tweet = tweet[0]._json['text'] weet.text.lower().strip()
 
     # ignore tweet if we've already tweeted it
-    if tweet[0]._json['retweeted']:
+    if tweet._json['retweeted']:
         log(at='filter', reason='already_retweeted', tweet=tweet._json['id'])
         return
 
     # Don't try to retweet our own tweets
-    if tweet[0]._json['user']['screen_name'].lower() == username.lower():
+    if tweet._json['user']['screen_name'].lower() == username.lower():
         log(at='filter', reason='is_my_tweet', tweet=tweet._json['id'])
         return
 
